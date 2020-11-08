@@ -36,27 +36,52 @@
 
 EE895 sensor = EE895();
 
-unittest(crcTestSent)
+unittest(crcTestBytesSent)
 {
-  uint16_t crc = sensor.updateCRC(0xBE>>1);
-  crc = sensor.updateCRC(0x03, crc);
-  crc = sensor.updateCRC(0x03, crc);
-  crc = sensor.updateCRC(0xEA, crc);
-  crc = sensor.updateCRC(0x00, crc);
-  crc = sensor.updateCRC(0x02, crc);
+  uint16_t crc = sensor.updateCRC((uint8_t)(0xBE>>1));
+  crc = sensor.updateCRC((uint8_t)0x03, crc);
+  crc = sensor.updateCRC((uint8_t)0x03, crc);
+  crc = sensor.updateCRC((uint8_t)0xEA, crc);
+  crc = sensor.updateCRC((uint8_t)0x00, crc);
+  crc = sensor.updateCRC((uint8_t)0x02, crc);
   uint16_t crcExpected = 0xC5E8;
   assertEqual(crcExpected, crc);
 }
 
-unittest(crcTestReceived)
+unittest(crcTestBytesReceived)
 {
-  uint16_t crc = sensor.updateCRC(0xBF>>1);
-  crc = sensor.updateCRC(0x03, crc);
-  crc = sensor.updateCRC(0x04, crc);
-  crc = sensor.updateCRC(0x00, crc);
-  crc = sensor.updateCRC(0x00, crc);
-  crc = sensor.updateCRC(0x41, crc);
-  crc = sensor.updateCRC(0xDC, crc);
+  uint16_t crc = sensor.updateCRC((uint8_t)(0xBF>>1));
+  crc = sensor.updateCRC((uint8_t)0x03, crc);
+  crc = sensor.updateCRC((uint8_t)0x04, crc);
+  crc = sensor.updateCRC((uint8_t)0x00, crc);
+  crc = sensor.updateCRC((uint8_t)0x00, crc);
+  crc = sensor.updateCRC((uint8_t)0x41, crc);
+  crc = sensor.updateCRC((uint8_t)0xDC, crc);
+  uint16_t crcExpected = 0x3F74;
+  assertEqual(crcExpected, crc);
+}
+
+unittest(crcTestWordsSent)
+{
+  uint16_t crc = sensor.updateCRC((uint8_t)(0xBE>>1));
+  crc = sensor.updateCRC((uint8_t)0x03, crc);
+  uint16_t startingAdress = 0x03EA;
+  crc = sensor.updateCRC(startingAdress, crc);
+  uint16_t noOfRegisters = 0x0002;
+  crc = sensor.updateCRC(noOfRegisters, crc);
+  uint16_t crcExpected = 0xC5E8;
+  assertEqual(crcExpected, crc);
+}
+
+unittest(crcTestWordsReceived)
+{
+  uint16_t crc = sensor.updateCRC((uint8_t)(0xBF>>1));
+  crc = sensor.updateCRC((uint8_t)0x03, crc);
+  crc = sensor.updateCRC((uint8_t)0x04, crc);
+  uint16_t register1 = 0x0000;
+  crc = sensor.updateCRC(register1, crc);
+  uint16_t register2 = 0x41DC;
+  crc = sensor.updateCRC(register2, crc);
   uint16_t crcExpected = 0x3F74;
   assertEqual(crcExpected, crc);
 }
