@@ -36,18 +36,29 @@
 
 EE895 sensor = EE895();
 
-unittest(crcTest1)
+unittest(crcTestSent)
 {
-  const unsigned char data[] = {(0xBE>>1), 0x03, 0x03, 0xEA, 0x00, 0x02};
+  uint16_t crc = sensor.updateCRC(0xBE>>1);
+  crc = sensor.updateCRC(0x03, crc);
+  crc = sensor.updateCRC(0x03, crc);
+  crc = sensor.updateCRC(0xEA, crc);
+  crc = sensor.updateCRC(0x00, crc);
+  crc = sensor.updateCRC(0x02, crc);
   uint16_t crcExpected = 0xC5E8;
-  assertEqual(crcExpected, sensor.calculateCRC(data, sizeof data));
+  assertEqual(crcExpected, crc);
 }
 
-unittest(crcTest2)
+unittest(crcTestReceived)
 {
-  const unsigned char data[] = {(0xBF>>1), 0x03, 0x04, 0x00, 0x00, 0x41, 0xDC};
+  uint16_t crc = sensor.updateCRC(0xBF>>1);
+  crc = sensor.updateCRC(0x03, crc);
+  crc = sensor.updateCRC(0x04, crc);
+  crc = sensor.updateCRC(0x00, crc);
+  crc = sensor.updateCRC(0x00, crc);
+  crc = sensor.updateCRC(0x41, crc);
+  crc = sensor.updateCRC(0xDC, crc);
   uint16_t crcExpected = 0x3F74;
-  assertEqual(crcExpected, sensor.calculateCRC(data, sizeof data));
+  assertEqual(crcExpected, crc);
 }
 
 unittest_main()

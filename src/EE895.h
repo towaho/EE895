@@ -11,7 +11,7 @@ class EE895 {
   public:
     EE895(void);
 
-    uint16_t calculateCRC(const unsigned char* data, size_t length);
+    uint16_t updateCRC(uint8_t data, uint16_t crc = 0xFFFF);
 
   private:
 };
