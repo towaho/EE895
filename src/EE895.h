@@ -12,6 +12,7 @@ class EE895 {
     EE895(void);
 
     uint16_t updateCRC(uint8_t data, uint16_t crc = 0xFFFF);
+    uint16_t updateCRC(uint16_t data, uint16_t crc = 0xFFFF);
 
   private:
 };
